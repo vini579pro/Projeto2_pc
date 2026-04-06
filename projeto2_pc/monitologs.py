@@ -152,79 +152,6 @@ def gerarAgente(i):
         return "Safari"
 
 
-#ANALISE
-
-def analisarLog(nome_arq):
-    total = 0
-    sucesso = 0
-    erro = 0
-    erro500 = 0
-    
-    somaTempo = 0
-    
-    try:
-        with open(nome_arq, "r", encoding="UTF-8") as arq:
-            for linha in arq:
-                total += 1
-                
-                # pegar status manual
-                status = ""
-                contador = 0
-                
-                for c in linha:
-                    if c == "-":
-                        contador += 1
-                    elif contador == 2:
-                        if c != " ":
-                            status += c
-                    elif contador > 2:
-                        break
-                
-                # pegar tempo
-                tempo = ""
-                pegando = False
-                
-                for c in linha:
-                    if c == "m":
-                        break
-                    if pegando:
-                        tempo += c
-                    if c == "-":
-                        pegando = not pegando
-                
-                try:
-                    tempo_int = int(tempo)
-                except:
-                    tempo_int = 0
-                
-                somaTempo += tempo_int
-                
-                if status == "200":
-                    sucesso += 1
-                else:
-                    erro += 1
-                    
-                if status == "500":
-                    erro500 += 1
-        
-        if total > 0:
-            disponibilidade = (sucesso / total) * 100
-            tempoMedio = somaTempo / total
-        else:
-            disponibilidade = 0
-            tempoMedio = 0
-        
-        print("\n===== RELATORIO =====")
-        print("total de acessos:", total)
-        print("total de sucesso:", sucesso)
-        print("total de erros:", erro)
-        print("erros 500:", erro500)
-        print("disponibilidade:", round(disponibilidade,2), "%")
-        print("tempo medio:", round(tempoMedio,2), "ms")
-        
-    except:
-        print("erro ao ler arquivo")
-
 # --- ANALISE parte 2---
 
 def analisarLog(nome_arq):
@@ -249,9 +176,9 @@ def analisarLog(nome_arq):
     status500 = 0
     
     # 4. Frequência
-    recursoMaisAcessado = "Processando..."
-    ipMaisAtivo = "Processando..."
-    ipComMaisErro = "Processando..."
+    recursoMaisAcessado = 0
+    ipMaisAtivo = 0
+    ipComMaisErro = 0
     
     # 5. Segurança e Diagnóstico
     fb_eventos = 0
@@ -416,42 +343,44 @@ def analisarLog(nome_arq):
             estado_final = "ATENÇÃO"
 
         # IMPRESSÃO DO RELATÓRIO COMPLETO
-        print("\n" + "="*50)
-        print("          RELATÓRIO FINAL - MONITOR LOGPY")
-        print("="*50)
+        print("RELATÓRIO - MONITOR LOGPY")
         print(f"Total de acessos: {total}")
-        print(f"Total de sucessos (200): {sucesso}")
-        print(f"Total de erros: {erro} | Erros críticos (500): {erro500}")
+        print(f"Total de sucessos: {sucesso}")
+        print(f'Total de erros: {erro}')
+        print(f'Erros críticos: {erro500}')
         print(f"Disponibilidade: {disponibilidade:.2f}%")
         print(f"Taxa de erro: {taxaErro:.2f}%")
         print(f"Tempo médio de resposta: {tempoMedio:.2f} ms")
-        print(f"Maior tempo: {maiorTempo} ms | Menor tempo: {menorTempo} ms")
-        print("-" * 50)
-        print(f"DISTRIBUIÇÃO DE DESEMPENHO:")
-        print(f" - Rápidos (<200ms): {qtdRapidos}")
-        print(f" - Normais (200-799ms): {qtdNormais}")
-        print(f" - Lentos (>=800ms): {qtdLentos}")
-        print("-" * 50)
-        print(f"DISTRIBUIÇÃO DE STATUS HTTP:")
-        print(f" 200: {status200} | 403: {status403} | 404: {status404} | 500: {status500}")
-        print("-" * 50)
-        print(f"DIAGNÓSTICO DE SEGURANÇA E OPERAÇÃO:")
-        print(f"Eventos de Força Bruta: {fb_eventos} (Último IP: {fb_ultimo_ip})")
+        print(f"Maior tempo: {maiorTempo} ms")
+        print(f'Menor tempo: {menorTempo} ms')
+        print(f"Acessos Rápidos: {qtdRapidos}")
+        print(f"Acessos Normais: {qtdNormais}")
+        print(f"Acessos Lentos: {qtdLentos}")
+        print(f"Quantidade de Status 200: {status200}")
+        print(f"Quantidade de Status 403: {status403}")
+        print(f"Quantidade de Status 404: {status404}")
+        print(f"Quantidade de Status 500: {status500}")
+        print(f'Recurso mais Acessado: {recursoMaisAcessado}')
+        print(f"Eventos de Força Bruta: {fb_eventos}")
+        print(f"Último IP com Força Bruta Detectada: {fb_ultimo_ip}")
         print(f"Acessos indevidos ao /admin: {adm_indevidos}")
         print(f"Eventos de degradação de desempenho: {deg_eventos}")
         print(f"Eventos de falha crítica: {critica_eventos}")
-        print(f"Suspeitas de Bot: {bot_eventos} (Último IP: {bot_ultimo_ip})")
-        print(f"Acessos a rotas sensíveis: {rota_sensivel_acessos} (Falhas: {rota_sensivel_falhas})")
-        print("-" * 50)
-        print(f"ESTADO FINAL DO SISTEMA: {estado_final}")
-        print("="*50)
+        print(f"Suspeitas de Bot: {bot_eventos}")
+        print(f"Ultimo IP suspeito de Bot: {bot_ultimo_ip}")
+        print(f"Acessos a rotas sensíveis: {rota_sensivel_acessos}")
+        print(f"Falhas em rotas sensiveis: {rota_sensivel_falhas}")
+        print(f"Estado final do sistema: {estado_final}")
+
         
     except FileNotFoundError:
-        print("[ERRO] Arquivo de log não encontrado. Gere os logs primeiro.")
+        print("Arquivo de log não encontrado. Gere os logs primeiro.")
     except Exception as e:
-        print(f"[ERRO] Falha durante a análise: {e}")
+        print(f"Falha durante a análise: {e}")
 
 menu()
+
+    
 
     
     
