@@ -1,3 +1,8 @@
+#integrantes 
+#Fernando Rodrigues Bueno
+#Henrique Rodrigues Dos Santos
+#Vinicius de Sousa Prates
+
 import random
 import datetime
 
